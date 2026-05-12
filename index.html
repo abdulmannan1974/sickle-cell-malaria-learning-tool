@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sickle Cell & Malaria — Blood Doctor Learning Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  /* ── Anthropic Design Tokens ─────────────────────────────── */
+  :root {
+    --bg:           #F5F4EF;
+    --bg-card:      #FFFFFF;
+    --bg-muted:     #EFEDE6;
+    --bg-dark:      #1A1916;
+    --text-primary: #1A1916;
+    --text-secondary:#6B6760;
+    --text-muted:   #9C9892;
+    --border:       #E3E1D9;
+    --border-strong:#C8C5BB;
+    --accent:       #C96442;
+    --accent-light: #F7EDE8;
+    --accent-dark:  #A84E33;
+    --teal:         #1D9E75;
+    --teal-light:   #E8F7F2;
+    --blue:         #3B82C4;
+    --blue-light:   #EBF2FB;
+    --amber:        #BA7517;
+    --amber-light:  #FBF3E2;
+    --purple:       #6B5FBD;
+    --purple-light: #F0EEFF;
+    --shadow-sm:    0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:    0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg:    0 8px 24px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.05);
+    --radius-sm:    8px;
+    --radius-md:    12px;
+    --radius-lg:    16px;
+    --radius-xl:    24px;
+    --font-sans:    'Inter', sans-serif;
+    --font-serif:   'Lora', serif;
+    --transition:   0.18s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ── Reset & Base ──────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; }
+  button { cursor: pointer; font-family: inherit; }
+
+  /* ── Scrollbar ─────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+  /* ── Layout ────────────────────────────────────────────── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── Navigation ────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(245,244,239,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 900px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 600; color: var(--text-primary);
+    text-decoration: none;
+  }
+  .nav-brand-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); display: flex; align-items: center;
+    justify-content: center; color: white; font-size: 13px; font-weight: 700;
+  }
+  .nav-meta { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+  .nav-progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .nav-progress-label { font-size: 12px; color: var(--text-muted); }
+  .nav-progress-bar {
+    width: 80px; height: 4px; background: var(--border);
+    border-radius: 2px; overflow: hidden;
+  }
+  .nav-progress-fill {
+    height: 100%; background: var(--accent);
+    border-radius: 2px; transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* ── Hero ──────────────────────────────────────────────── */
+  .hero {
+    padding: 56px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent);
+    background: var(--accent-light); border: 1px solid #E8BFB2;
+    padding: 4px 10px; border-radius: 20px; margin-bottom: 20px;
+  }
+  .hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 600; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+  .hero-title em { color: var(--accent); font-style: italic; }
+  .hero-subtitle {
+    font-size: 16px; line-height: 1.7;
+    color: var(--text-secondary); max-width: 620px; margin-bottom: 28px;
+  }
+  .hero-stats {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    margin-bottom: 32px;
+  }
+  .hero-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .hero-stat-num {
+    font-size: 22px; font-weight: 700;
+    color: var(--text-primary); line-height: 1;
+  }
+  .hero-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hero-tag {
+    font-size: 12px; font-weight: 500;
+    padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary); background: var(--bg-card);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .hero-tag i { color: var(--accent); }
+
+  /* ── Section Tabs ──────────────────────────────────────── */
+  .tabs-wrapper {
+    position: sticky; top: 56px; z-index: 90;
+    background: rgba(245,244,239,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .tabs-inner {
+    max-width: 900px; margin: 0 auto; padding: 0 24px;
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-inner::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 14px 18px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted); background: none; border: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color var(--transition), border-color var(--transition);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { color: var(--text-primary); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn .tab-badge {
+    font-size: 10px; font-weight: 600;
+    background: var(--accent); color: white;
+    padding: 1px 5px; border-radius: 8px;
+  }
+  .tab-btn i { width: 14px; height: 14px; }
+
+  /* ── Panels ────────────────────────────────────────────── */
+  .panel { display: none; padding: 36px 0 60px; }
+  .panel.active { display: block; animation: fadeUp 0.25s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .panel-header { margin-bottom: 28px; }
+  .panel-title {
+    font-family: var(--font-serif); font-size: 22px;
+    font-weight: 600; margin-bottom: 6px; color: var(--text-primary);
+  }
+  .panel-desc { font-size: 14px; color: var(--text-secondary); }
+
+  /* ── Story Cards ───────────────────────────────────────── */
+  .story-stack { display: flex; flex-direction: column; gap: 16px; }
+  .story-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    border-left: 4px solid var(--border-strong);
+    transition: box-shadow var(--transition);
+  }
+  .story-card:hover { box-shadow: var(--shadow-sm); }
+  .story-card.accent  { border-left-color: var(--accent); }
+  .story-card.teal    { border-left-color: var(--teal); }
+  .story-card.warn    { border-left-color: #E25C3B; }
+  .story-card.purple  { border-left-color: var(--purple); }
+  .story-card.amber   { border-left-color: var(--amber); }
+  .story-card-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px; font-size: 14px;
+  }
+  .story-card.accent .story-card-icon  { background: var(--accent-light); color: var(--accent); }
+  .story-card.teal .story-card-icon    { background: var(--teal-light); color: var(--teal); }
+  .story-card.warn .story-card-icon    { background: #FEECE8; color: #E25C3B; }
+  .story-card.purple .story-card-icon  { background: var(--purple-light); color: var(--purple); }
+  .story-card.amber .story-card-icon   { background: var(--amber-light); color: var(--amber); }
+  .story-card-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+  }
+  .story-card-title {
+    font-family: var(--font-serif); font-size: 18px;
+    font-weight: 600; color: var(--text-primary); margin-bottom: 10px;
+  }
+  .story-card-body {
+    font-size: 14px; line-height: 1.75; color: var(--text-secondary);
+  }
+  .story-card-body strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Key Insight Banner ────────────────────────────────── */
+  .insight-banner {
+    background: var(--bg-dark); color: white;
+    border-radius: var(--radius-lg); padding: 22px 24px;
+    margin-bottom: 20px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .insight-banner i { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .insight-banner p { font-size: 14px; line-height: 1.7; }
+  .insight-banner strong { color: #F5D0C3; }
+
+  /* ── Shields Grid ──────────────────────────────────────── */
+  .shields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px; margin-bottom: 24px;
+  }
+  .shield-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px 20px;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .shield-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .shield-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .sh-blue::before  { background: var(--blue); }
+  .sh-teal::before  { background: var(--teal); }
+  .sh-purple::before{ background: var(--purple); }
+  .sh-amber::before { background: var(--amber); }
+  .sh-coral::before { background: var(--accent); }
+  .shield-number {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 12px; padding: 3px 8px;
+    border-radius: 4px; display: inline-block;
+  }
+  .sh-blue  .shield-number { background: var(--blue-light); color: var(--blue); }
+  .sh-teal  .shield-number { background: var(--teal-light); color: var(--teal); }
+  .sh-purple.shield-number,
+  .sh-purple .shield-number { background: var(--purple-light); color: var(--purple); }
+  .sh-amber .shield-number { background: var(--amber-light); color: var(--amber); }
+  .sh-coral .shield-number { background: var(--accent-light); color: var(--accent); }
+  .shield-title {
+    font-size: 15px; font-weight: 600; margin-bottom: 8px;
+    color: var(--text-primary); line-height: 1.3;
+  }
+  .shield-new {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; background: var(--teal); color: white;
+    padding: 2px 5px; border-radius: 4px; margin-left: 6px;
+    vertical-align: middle;
+  }
+  .shield-body {
+    font-size: 13px; line-height: 1.6; color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+  .shield-analogy {
+    font-size: 12px; font-style: italic; line-height: 1.5;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+  }
+  .sh-blue  .shield-analogy { background: var(--blue-light); }
+  .sh-teal  .shield-analogy { background: var(--teal-light); }
+  .sh-purple .shield-analogy { background: var(--purple-light); }
+  .sh-amber .shield-analogy { background: var(--amber-light); }
+  .sh-coral .shield-analogy { background: var(--accent-light); }
+  .shield-cta {
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+    margin-top: 12px; display: flex; align-items: center; gap: 4px;
+    opacity: 0; transition: opacity var(--transition);
+  }
+  .shield-card:hover .shield-cta { opacity: 1; }
+
+  /* ── 2024 Pearl Box ────────────────────────────────────── */
+  .pearl-box {
+    background: linear-gradient(135deg, #1A1916 0%, #262420 100%);
+    border-radius: var(--radius-lg); padding: 22px 24px;
+    border: 1px solid #3A3830; margin: 24px 0;
+  }
+  .pearl-box-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pearl-box-body { font-size: 14px; line-height: 1.75; color: #C8C5BB; }
+  .pearl-box-body strong { color: white; }
+
+  /* ── Sources ───────────────────────────────────────────── */
+  .sources-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .source-chip {
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 6px;
+    background: var(--bg-muted); border: 1px solid var(--border);
+    color: var(--text-muted); display: flex; align-items: center; gap: 5px;
+  }
+  .source-chip i { color: var(--accent); }
+
+  /* ── Compare Table ─────────────────────────────────────── */
+  .compare-table-wrap {
+    overflow-x: auto; border-radius: var(--radius-lg);
+    border: 1px solid var(--border); margin-bottom: 24px;
+  }
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .compare-table thead tr { background: var(--bg-muted); }
+  .compare-table th {
+    padding: 12px 16px; text-align: left;
+    font-weight: 600; font-size: 12px; color: var(--text-secondary);
+    letter-spacing: 0.03em; border-bottom: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 11px 16px; border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: rgba(201,100,66,0.03); }
+  .badge-yes {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: var(--teal);
+    background: var(--teal-light); padding: 3px 8px; border-radius: 6px;
+  }
+  .badge-no {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: #E25C3B;
+    background: #FEECE8; padding: 3px 8px; border-radius: 6px;
+  }
+  .badge-haas { background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .badge-hss  { background: #FEECE8; color: #E25C3B; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+
+  /* ── Failure Cards ─────────────────────────────────────── */
+  .fail-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .fail-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 18px 20px;
+    border-left: 4px solid #E25C3B;
+  }
+  .fail-card.twist { border-left-color: var(--amber); }
+  .fail-card-title {
+    font-size: 14px; font-weight: 600; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .fail-card-body { font-size: 13px; line-height: 1.7; color: var(--text-secondary); }
+  .fail-card-body strong { color: var(--text-primary); font-weight: 600; }
+  .fail-ref {
+    margin-top: 10px; font-size: 11px; color: var(--text-muted);
+    padding: 4px 8px; background: var(--bg-muted);
+    border-radius: 5px; display: inline-block;
+  }
+
+  /* ── Flashcards ────────────────────────────────────────── */
+  .fc-progress-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .fc-progress-track {
+    flex: 1; height: 6px; background: var(--border);
+    border-radius: 3px; margin: 0 14px; overflow: hidden;
+  }
+  .fc-progress-fill {
+    height: 100%; background: var(--accent);
+    border-radius: 3px; transition: width 0.4s ease;
+  }
+  .fc-counter { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+  .fc-scene {
+    perspective: 1200px;
+    height: 260px; margin-bottom: 20px;
+  }
+  .fc-flipper {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+    cursor: pointer;
+  }
+  .fc-flipper.flipped { transform: rotateY(180deg); }
+  .fc-face {
+    position: absolute; width: 100%; height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 28px 30px;
+  }
+  .fc-front { background: var(--bg-card); }
+  .fc-back  { background: var(--bg-dark); color: white; transform: rotateY(180deg); }
+  .fc-face-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .fc-front .fc-face-label { color: var(--accent); }
+  .fc-back  .fc-face-label { color: #7B7A73; }
+  .fc-q {
+    font-family: var(--font-serif); font-size: 18px;
+    font-weight: 500; line-height: 1.5; color: var(--text-primary);
+    flex: 1;
+  }
+  .fc-a {
+    font-size: 13.5px; line-height: 1.75;
+    color: #C8C5BB; flex: 1; overflow-y: auto;
+  }
+  .fc-a strong { color: white; font-weight: 600; }
+  .fc-flip-hint {
+    margin-top: 16px; font-size: 11px; font-weight: 500;
+    color: var(--text-muted); display: flex; align-items: center;
+    gap: 5px;
+  }
+  .fc-back .fc-flip-hint { color: #55534D; }
+  .fc-controls {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .fc-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-card); color: var(--text-primary);
+    font-size: 13px; font-weight: 500;
+    transition: all var(--transition);
+  }
+  .fc-btn:hover { background: var(--bg-muted); border-color: var(--border-strong); }
+  .fc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .fc-btn-primary {
+    background: var(--accent); border-color: var(--accent-dark);
+    color: white;
+  }
+  .fc-btn-primary:hover { background: var(--accent-dark); }
+  .fc-dots { display: flex; gap: 6px; }
+  .fc-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); transition: background 0.2s;
+  }
+  .fc-dot.active { background: var(--accent); }
+  .fc-dot.seen   { background: var(--border-strong); }
+
+  /* ── Viva Questions ────────────────────────────────────── */
+  .viva-list { display: flex; flex-direction: column; gap: 10px; }
+  .viva-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-md); overflow: hidden;
+    transition: box-shadow var(--transition);
+  }
+  .viva-item:hover { box-shadow: var(--shadow-sm); }
+  .viva-trigger {
+    width: 100%; padding: 18px 20px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    background: none; border: none; text-align: left; cursor: pointer;
+  }
+  .viva-q-wrap { flex: 1; }
+  .viva-level-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .viva-level {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 2px 7px; border-radius: 5px;
+  }
+  .vl-core { background: var(--blue-light); color: var(--blue); }
+  .vl-deep { background: var(--purple-light); color: var(--purple); }
+  .vl-new  { background: var(--teal-light); color: var(--teal); }
+  .viva-q  { font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--text-primary); }
+  .viva-chevron {
+    color: var(--text-muted); flex-shrink: 0; margin-top: 2px;
+    transition: transform 0.25s; width: 18px; height: 18px;
+  }
+  .viva-item.open .viva-chevron { transform: rotate(180deg); }
+  .viva-answer {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .viva-item.open .viva-answer { max-height: 800px; }
+  .viva-answer-inner {
+    padding: 0 20px 20px; border-top: 1px solid var(--border);
+    font-size: 13.5px; line-height: 1.8; color: var(--text-secondary);
+    padding-top: 16px;
+  }
+  .viva-answer-inner strong { color: var(--text-primary); font-weight: 600; }
+  .viva-answer-inner ol { padding-left: 18px; margin-top: 8px; }
+  .viva-answer-inner ol li { margin-bottom: 6px; }
+
+  /* ── Completed State ───────────────────────────────────── */
+  .section-complete {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; color: var(--teal);
+    padding: 3px 9px; background: var(--teal-light);
+    border-radius: 20px;
+  }
+
+  /* ── Footer ────────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0; margin-top: 20px;
+    color: var(--text-muted); font-size: 12px;
+  }
+  .footer-inner {
+    max-width: 900px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-secondary); }
+  .footer-brand-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: white; font-size: 9px;
+    font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a { color: var(--text-muted); text-decoration: none; }
+  .footer-links a:hover { color: var(--text-primary); }
+
+  /* ── Utility ───────────────────────────────────────────── */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } .shields-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="#">
+      <div class="nav-brand-dot">🩸</div>
+      <span>Blood Doctor <span class="nav-meta">· Dr Abdul Mannan FRCPath</span></span>
+    </a>
+    <div class="nav-progress-wrap">
+      <span class="nav-progress-label" id="navProgressLabel">0% complete</span>
+      <div class="nav-progress-bar">
+        <div class="nav-progress-fill" id="navProgressFill"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <i data-lucide="dna" style="width:12px;height:12px;"></i>
+      FRCPath · FCPS · Clinical Haematology
+    </div>
+    <h1 class="hero-title">Sickle Cell &amp; Malaria:<br><em>The Evolutionary Trade-off</em></h1>
+    <p class="hero-subtitle">Why one copy of HbS saves your life against malaria, why two copies cannot — and what modern evidence reveals about immunity, parasites, and genetics.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">5</span>
+        <span class="hero-stat-label">Protective Mechanisms</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">10</span>
+        <span class="hero-stat-label">Revision Flashcards</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">6</span>
+        <span class="hero-stat-label">Viva Questions</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">2024</span>
+        <span class="hero-stat-label">Latest Evidence</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="hero-tag"><i data-lucide="microscope" style="width:12px;height:12px;"></i> Haemoglobinopathy</span>
+      <span class="hero-tag"><i data-lucide="shield" style="width:12px;height:12px;"></i> Balanced Polymorphism</span>
+      <span class="hero-tag"><i data-lucide="flask-conical" style="width:12px;height:12px;"></i> Immunology</span>
+      <span class="hero-tag"><i data-lucide="brain" style="width:12px;height:12px;"></i> Evolutionary Genetics</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="showTab('story',this)" data-tab="story">
+      <i data-lucide="book-open" style="width:14px;height:14px;"></i>
+      Core Story
+    </button>
+    <button class="tab-btn" onclick="showTab('shields',this)" data-tab="shields">
+      <i data-lucide="shield-check" style="width:14px;height:14px;"></i>
+      5 Shields of HbAS
+    </button>
+    <button class="tab-btn" onclick="showTab('fails',this)" data-tab="fails">
+      <i data-lucide="x-circle" style="width:14px;height:14px;"></i>
+      Why HbSS Fails
+    </button>
+    <button class="tab-btn" onclick="showTab('cards',this)" data-tab="cards">
+      <i data-lucide="layers" style="width:14px;height:14px;"></i>
+      Flashcards
+      <span class="tab-badge" id="cardsBadge">10</span>
+    </button>
+    <button class="tab-btn" onclick="showTab('viva',this)" data-tab="viva">
+      <i data-lucide="message-square" style="width:14px;height:14px;"></i>
+      Viva Questions
+    </button>
+  </div>
+</div>
+
+<!-- ── PANEL: CORE STORY ──────────────────────────────────── -->
+<div id="story" class="panel active">
+  <div class="container">
+    <div class="panel-header">
+      <h2 class="panel-title">The Core Story</h2>
+      <p class="panel-desc">Start here. Understand the whole picture in plain language before drilling into mechanisms.</p>
+    </div>
+
+    <div class="insight-banner">
+      <i data-lucide="lightbulb" style="width:20px;height:20px;flex-shrink:0;margin-top:1px;"></i>
+      <p><strong>The one-line answer for the viva:</strong> HbAS protects because the red cell becomes hostile to the parasite while the spleen remains intact to clear infected cells. HbSS loses protection because the spleen autoinfarcts in early childhood — and every protective mechanism in HbAS depends on a functioning spleen.</p>
+    </div>
+
+    <div class="story-stack">
+      <div class="story-card accent">
+        <div class="story-card-icon"><i data-lucide="trending-up" style="width:16px;height:16px;"></i></div>
+        <div class="story-card-label">Evolutionary Biology</div>
+        <div class="story-card-title">The evolutionary bargain</div>
+        <div class="story-card-body">The HbS mutation is not a mistake. In sub-Saharan Africa, malaria killed children before they could reproduce. <strong>One copy of HbS gave a 10–15% survival advantage.</strong> Those children survived, had children, passed on the gene. Over generations, HbS frequency rose to over 25% in some regions. The cost: some children inherit two copies and develop sickle cell disease.</div>
+      </div>
+
+      <div class="story-card teal">
+        <div class="story-card-icon"><i data-lucide="infinity" style="width:16px;height:16px;"></i></div>
+        <div class="story-card-label">The Central Paradox</div>
+        <div class="story-card-title">One gene, two fates</div>
+        <div class="story-card-body">One copy of HbS saves your life against malaria. Two copies can destroy it. The same biology that protects the heterozygote becomes lethal in the homozygote. This is <strong>balanced polymorphism</strong> — one of the most elegant demonstrations in all of medicine that genetics and environment cannot be understood separately.</div>
+      </div>
+
+      <div class="story-card warn">
+        <div class="story-card-icon"><i data-lucide="flask-conical" style="width:16px;height:16px;"></i></div>
+        <div class="story-card-label">2022 Discovery</div>
+        <div class="story-card-title">The finding that changed the picture</div>
+        <div class="story-card-body">For decades we assumed HbSS patients were simply unprotected against all malaria strains. Research in 2022 showed HbSS patients are actually broadly resistant to <em>most</em> P. falciparum genotypes via intracellular HbS stress. <strong>But a minority of parasite strains with three specific genetic mutations can overcome this resistance</strong> — and those strains drive most clinical malaria in HbSS patients. This is active research territory.<br><br><em>⚠ This specific citation could not be live-verified in this session via PubMed — verify before citing in teaching.</em></div>
+      </div>
+
+      <div class="story-card purple">
+        <div class="story-card-icon"><i data-lucide="pill" style="width:16px;height:16px;"></i></div>
+        <div class="story-card-label">Modern Medicine</div>
+        <div class="story-card-title">How treatment broke the trade-off</div>
+        <div class="story-card-body">Hydroxycarbamide, transcranial Doppler screening, prophylactic penicillin, pneumococcal vaccination, and gene therapy have <strong>partially broken the evolutionary trade-off</strong>. A diagnosis of HbSS is no longer a death sentence in high-income settings. The selective pressure that drove the gene to high frequency has been circumvented by medicine — though the gene remains common because the shift in life expectancy has not yet fed back into evolutionary selection.</div>
+      </div>
+
+      <div class="story-card amber">
+        <div class="story-card-icon"><i data-lucide="alert-triangle" style="width:16px;height:16px;"></i></div>
+        <div class="story-card-label">Clinical Implication</div>
+        <div class="story-card-title">Why this matters in the clinic today</div>
+        <div class="story-card-body">HbSS children in sub-Saharan Africa face <strong>malaria, catastrophic anaemia, and functional asplenia simultaneously</strong>. In Bangor or London, the same children receive penicillin prophylaxis, pneumococcal cover, hydroxyurea, and stroke screening. The biology is identical — the outcome is not. Understanding this disparity is not just academic. It informs what we prescribe, what we counsel families about travel, and how we interpret febrile episodes.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p class="section-label">Key Terminology</p>
+    <div class="two-col">
+      <div class="fail-card" style="border-left-color:var(--blue);">
+        <div class="fail-card-title" style="color:var(--blue);">HbAS — Sickle Cell Trait</div>
+        <div class="fail-card-body">Heterozygous: one normal HbA gene, one HbS gene. ~40% HbS, ~60% HbA. Normal spleen. <strong>Protected from severe malaria.</strong></div>
+      </div>
+      <div class="fail-card">
+        <div class="fail-card-title">HbSS — Sickle Cell Disease</div>
+        <div class="fail-card-body">Homozygous: two HbS genes. 100% HbS. Functional asplenia by age 1. <strong>NOT protected from malaria.</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: SHIELDS ─────────────────────────────────────── -->
+<div id="shields" class="panel">
+  <div class="container">
+    <div class="panel-header">
+      <h2 class="panel-title">Five Shields of HbAS</h2>
+      <p class="panel-desc">Five layered mechanisms explain why HbAS carriers are protected from severe malaria. Teach one at a time. Click any card to explore deeper.</p>
+    </div>
+
+    <div class="shields-grid">
+      <div class="shield-card sh-blue" onclick="sendPrompt('Explain the sickling trap mechanism in sickle cell trait and malaria in detail')">
+        <div class="shield-number">Shield ①</div>
+        <div class="shield-title">The Sickling Trap</div>
+        <div class="shield-body">Parasite consumes O₂ → local hypoxia → HbS polymerises → cell sickles → spleen destroys cell + parasite inside.</div>
+        <div class="shield-analogy">"The parasite digs its own grave. By consuming oxygen, it triggers the very process that kills it."</div>
+        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
+      </div>
+
+      <div class="shield-card sh-teal" onclick="sendPrompt('Explain the hostile intracellular environment in HbAS red cells against malaria parasites')">
+        <div class="shield-number">Shield ②</div>
+        <div class="shield-title">Hostile Interior</div>
+        <div class="shield-body">↑ Oxidative stress · ↓ pH · ↓ K⁺ · toxic HbS degradation products — all damage the parasite before sickling even begins.</div>
+        <div class="shield-analogy">"The HbAS red cell is like an unwelcoming hotel — everything the parasite needs is in short supply."</div>
+        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
+      </div>
+
+      <div class="shield-card sh-purple" onclick="sendPrompt('Explain PfEMP1 trafficking disruption in HbAS cells and why this prevents cerebral malaria')">
+        <div class="shield-number">Shield ③</div>
+        <div class="shield-title">PfEMP1 Disruption <span class="shield-new">KEY</span></div>
+        <div class="shield-body">Sickling disrupts PfEMP1 surface trafficking → less cytoadherence → infected cell stays in circulation → spleen destroys it. Prevents cerebral malaria.</div>
+        <div class="shield-analogy">"The parasite's camouflage fails. It can't grip the vessel wall, so it gets swept to the spleen."</div>
+        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
+      </div>
+
+      <div class="shield-card sh-amber" onclick="sendPrompt('How does HbAS accelerate antimalarial immune training including NK cells and CD8 T cells')">
+        <div class="shield-number">Shield ④</div>
+        <div class="shield-title">Immune Training <span class="shield-new">NEW 2020–21</span></div>
+        <div class="shield-body">Repeated, spleen-controlled antigen exposure → faster NK cell memory (CD38dim CD45RO+) + larger CD8+ T cell compartment → quicker parasite control on re-exposure.</div>
+        <div class="shield-analogy">"HbAS children run a built-in malaria vaccination programme — the spleen delivers antigens in controlled doses."</div>
+        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
+      </div>
+
+      <div class="shield-card sh-coral" onclick="sendPrompt('Explain impaired rosetting in HbAS cells and how this prevents microvascular obstruction in malaria')">
+        <div class="shield-number">Shield ⑤</div>
+        <div class="shield-title">Impaired Rosetting</div>
+        <div class="shield-body">HbAS parasitised cells show significantly reduced rosetting → less microvascular obstruction → less cerebral, renal, pulmonary sequestration.</div>
+        <div class="shield-analogy">"Normal cells clump and block vessels. HbAS cells won't stick — so the traffic jam never forms."</div>
+        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
+      </div>
+    </div>
+
+    <div class="pearl-box">
+      <div class="pearl-box-label"><i data-lucide="sparkles" style="width:12px;height:12px;"></i> 2024 Addition — Loiseau / Tukwasibwe</div>
+      <div class="pearl-box-body">Disrupted PfEMP1 in HbAS cells doesn't just prevent cytoadherence. It also exposes the parasite to antibody binding, making HbAS cells better targets for NK cell ADCC (antibody-dependent cellular cytotoxicity). <strong>The mechanism that strips the parasite's camouflage also flags it for immune killing. Two-for-one.</strong></div>
+    </div>
+
+    <p class="section-label">Sources</p>
+    <div class="sources-row">
+      <span class="source-chip"><i data-lucide="file-text" style="width:10px;height:10px;"></i> Loiseau et al. 2020 — Clin Transl Immunol</span>
+      <span class="source-chip"><i data-lucide="file-text" style="width:10px;height:10px;"></i> Loiseau et al. 2021 — Clin Transl Immunol</span>
+      <span class="source-chip"><i data-lucide="file-text" style="width:10px;height:10px;"></i> Tukwasibwe et al. 2024 — Clin Transl Immunol</span>
+      <span class="source-chip"><i data-lucide="file-text" style="width:10px;height:10px;"></i> Jensen et al. 2019 — Immunol Rev</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: WHY HbSS FAILS ──────────────────────────────── -->
+<div id="fails" class="panel">
+  <div class="container">
+    <div class="panel-header">
+      <h2 class="panel-title">Why HbSS Fails</h2>
+      <p class="panel-desc">Every mechanism that protects HbAS depends on the spleen. HbSS loses the spleen — and then loses everything else.</p>
+    </div>
+
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th><span class="badge-haas">HbAS — Trait</span></th>
+            <th><span class="badge-hss">HbSS — Disease</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Spleen</strong></td>
+            <td><span class="badge-yes"><i data-lucide="check" style="width:10px;height:10px;"></i> Functioning</span></td>
+            <td><span class="badge-no"><i data-lucide="x" style="width:10px;height:10px;"></i> Auto-infarcted by age 1</span></td>
+          </tr>
+          <tr>
+            <td><strong>HbA present</strong></td>
+            <td><span class="badge-yes"><i data-lucide="check" style="width:10px;height:10px;"></i> ~60% HbA dilutes HbS</span></td>
+            <td><span class="badge-no"><i data-lucide="x" style="width:10px;height:10px;"></i> 100% HbS — no dilution</span></td>
+          </tr>
+          <tr>
+            <td><strong>Baseline Hb</strong></td>
+            <td><span class="badge-yes"><i data-lucide="check" style="width:10px;height:10px;"></i> Normal 12–15 g/dL</span></td>
+            <td><span class="badge-no"><i data-lucide="x" style="width:10px;height:10px;"></i> 6–9 g/dL — no reserve</span></td>
+          </tr>
+          <tr>
+            <td><strong>PfEMP1 clearance</strong></td>
+            <td><span class="badge-yes"><i data-lucide="check" style="width:10px;height:10px;"></i> Efficient via spleen</span></td>
+            <td><span class="badge-no"><i data-lucide="x" style="width:10px;height:10px;"></i> Cannot execute — no spleen</span></td>
+          </tr>
+          <tr>
+            <td><strong>Immune function</strong></td>
+            <td><span class="badge-yes"><i data-lucide="check" style="width:10px;height:10px;"></i> Near-normal + trained</span></td>
+            <td><span class="badge-no"><i data-lucide="x" style="width:10px;height:10px;"></i> Dysregulated, distracted</span></td>
+          </tr>
+          <tr>
+            <td><strong>End-organ reserve</strong></td>
+            <td><span class="badge-yes"><i data-lucide="check" style="width:10px;height:10px;"></i> Intact</span></td>
+            <td><span class="badge-no"><i data-lucide="x" style="width:10px;height:10px;"></i> Renal, pulmonary, cerebral already compromised</span></td>
+          </tr>
+          <tr>
+            <td><strong>Unswitched memory B cells</strong></td>
+            <td><span class="badge-yes"><i data-lucide="check" style="width:10px;height:10px;"></i> Normal UMBC</span></td>
+            <td><span class="badge-no"><i data-lucide="x" style="width:10px;height:10px;"></i> UMBC deficiency — declining with age</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="fail-stack">
+      <div class="fail-card">
+        <div class="fail-card-title"><i data-lucide="x-circle" style="width:16px;height:16px;color:#E25C3B;"></i> Failure 1 — The spleen is gone</div>
+        <div class="fail-card-body">Every protective mechanism depends on the spleen. Sickling trap, PfEMP1 clearance, immune training — all require a functioning red pulp. HbSS autoinfarcts the spleen through repeated intrasplenic sickling. By age 1, most children are <strong>functionally asplenic</strong>. The protective machinery exists in theory but cannot run.
+          <div class="fail-ref">Tubman 2024 AJH · Pourdieu 2023 AJH</div>
+        </div>
+      </div>
+
+      <div class="fail-card">
+        <div class="fail-card-title"><i data-lucide="x-circle" style="width:16px;height:16px;color:#E25C3B;"></i> Failure 2 — No HbA to dilute polymerisation</div>
+        <div class="fail-card-body">In HbAS, HbA acts as a buffer. Polymerisation needs a genuine stimulus — like a parasite consuming intracellular oxygen and creating local hypoxia. In HbSS, <strong>100% HbS means polymerisation is ongoing and chronic</strong>. Red cells are already exhausted before the parasite arrives. The hostile environment that kills parasites in HbAS is simply baseline cellular stress in HbSS.</div>
+      </div>
+
+      <div class="fail-card">
+        <div class="fail-card-title"><i data-lucide="x-circle" style="width:16px;height:16px;color:#E25C3B;"></i> Failure 3 — Malaria haemolysis on top of haemolytic anaemia</div>
+        <div class="fail-card-body">HbSS patients run Hb <strong>6–9 g/dL at baseline</strong> with near-maximal erythropoiesis. When malaria arrives and causes haemolysis on top of haemolysis, the result is catastrophic anaemia — the most common mechanism of malaria-related death in SCD children. There is no physiological buffer. HbAA or HbAS patients can tolerate malarial haemolysis; HbSS cannot.</div>
+      </div>
+
+      <div class="fail-card">
+        <div class="fail-card-title"><i data-lucide="x-circle" style="width:16px;height:16px;color:#E25C3B;"></i> Failure 4 — Immune dysregulation faces the wrong direction</div>
+        <div class="fail-card-body">HbSS causes chronic immune dysregulation — overactive macrophages, dysregulated complement, impaired B and T cell function. <strong>Unswitched memory B cells (UMBC)</strong> — the circulating correlate of marginal zone B cells — decline with age in HbSS but not in controls. When malaria arrives, the immune system is already occupied by vaso-occlusion-driven inflammation.
+          <div class="fail-ref">Tubman et al. 2024 AJH</div>
+        </div>
+      </div>
+
+      <div class="fail-card twist">
+        <div class="fail-card-title"><i data-lucide="alert-triangle" style="width:16px;height:16px;color:var(--amber);"></i> The twist — HbSS isn't simply unprotected</div>
+        <div class="fail-card-body">HbSS patients appear <strong>broadly resistant to most P. falciparum genotypes</strong> — intracellular HbS stress damages the parasite regardless of spleen. But a minority subset of parasites with three specific mutations can overcome this resistance. Those strains drive most clinical malaria in HbSS populations in endemic areas.<br><br><em>⚠ Described in a 2022 paper (attributed Band et al., Nature) — citation not live-verified in this session. Verify before using in formal teaching.</em></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: FLASHCARDS ──────────────────────────────────── -->
+<div id="cards" class="panel">
+  <div class="container">
+    <div class="panel-header">
+      <h2 class="panel-title">Revision Flashcards</h2>
+      <p class="panel-desc">10 exam-ready cards. Click to flip. Use keyboard arrows too.</p>
+    </div>
+
+    <div class="fc-progress-row">
+      <span class="fc-counter" id="fcCounter">Card 1 of 10</span>
+      <div class="fc-progress-track">
+        <div class="fc-progress-fill" id="fcProgressFill" style="width:10%"></div>
+      </div>
+      <div class="fc-dots" id="fcDots"></div>
+    </div>
+
+    <div class="fc-scene">
+      <div class="fc-flipper" id="fcFlipper" onclick="flipCard()">
+        <div class="fc-face fc-front">
+          <div class="fc-face-label" id="fcFrontLabel">Mechanism</div>
+          <div class="fc-q" id="fcQ">What is the single most important reason HbSS patients are not protected from malaria, despite having HbS in every red cell?</div>
+          <div class="fc-flip-hint"><i data-lucide="rotate-cw" style="width:12px;height:12px;"></i> Click to reveal answer</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-face-label" id="fcBackLabel">Answer</div>
+          <div class="fc-a" id="fcA"><strong>Functional asplenia.</strong> By age 1, most HbSS children have lost splenic function through autoinfarction. Every protective mechanism — sickling trap, PfEMP1 clearance, immune training — requires a functioning spleen to execute. HbSS patients have the machinery but not the organ to run it.</div>
+          <div class="fc-flip-hint"><i data-lucide="rotate-cw" style="width:12px;height:12px;"></i> Click to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn" id="fcPrev" onclick="prevCard()"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Previous</button>
+      <button class="fc-btn fc-btn-primary" onclick="flipCard()"><i data-lucide="rotate-cw" style="width:14px;height:14px;"></i> Flip</button>
+      <button class="fc-btn" id="fcNext" onclick="nextCard()">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: VIVA QUESTIONS ──────────────────────────────── -->
+<div id="viva" class="panel">
+  <div class="container">
+    <div class="panel-header">
+      <h2 class="panel-title">Viva Questions</h2>
+      <p class="panel-desc">FRCPath &amp; FCPS standard. Tap any question to reveal the model answer. Use these for self-testing and trainee teaching.</p>
+    </div>
+
+    <ul class="viva-list">
+      <li class="viva-item">
+        <button class="viva-trigger" onclick="toggleViva(this)">
+          <div class="viva-q-wrap">
+            <div class="viva-level-row">
+              <span class="viva-level vl-core">Core</span>
+            </div>
+            <div class="viva-q">Explain why sickle cell trait is protective against malaria, but sickle cell disease is not.</div>
+          </div>
+          <i data-lucide="chevron-down" class="viva-chevron"></i>
+        </button>
+        <div class="viva-answer">
+          <div class="viva-answer-inner">
+            HbAS protection depends on five layered mechanisms: <strong>the sickling trap</strong> (parasite-induced hypoxia triggers polymerisation, which spleen then clears), <strong>hostile intracellular environment</strong> (↑ oxidative stress, ↓ pH, ↓ K⁺), <strong>PfEMP1 trafficking disruption</strong> (preventing cytoadherence and rosetting), <strong>accelerated immune training</strong>, and <strong>impaired rosetting</strong>. All five require a functioning spleen. In HbSS, functional asplenia develops by age 1 through autoinfarction — the machinery exists but the executor is gone. Additionally, HbSS has no HbA buffer, a pre-existing haemolytic anaemia with no reserve, and a chronically dysregulated immune system.
+          </div>
+        </div>
+      </li>
+
+      <li class="viva-item">
+        <button class="viva-trigger" onclick="toggleViva(this)">
+          <div class="viva-q-wrap">
+            <div class="viva-level-row">
+              <span class="viva-level vl-deep">Deep</span>
+            </div>
+            <div class="viva-q">What is PfEMP1 and why is its disruption important in sickle cell trait?</div>
+          </div>
+          <i data-lucide="chevron-down" class="viva-chevron"></i>
+        </button>
+        <div class="viva-answer">
+          <div class="viva-answer-inner">
+            <strong>PfEMP1</strong> (P. falciparum Erythrocyte Membrane Protein 1) is a parasite-exported protein that mediates cytoadherence to vascular endothelium (especially in brain, lungs, placenta) and rosetting with uninfected cells. Both processes cause microvascular obstruction and drive severe malaria syndromes.<br><br>
+            In HbAS cells, sickling under hypoxia disrupts PfEMP1 trafficking to the cell surface. Less PfEMP1 displayed = less sticking = parasitised cell stays in circulation = splenic clearance. This is how HbAS prevents cerebral malaria — not just fewer parasites, but less severe disease per parasite load. 2024 data adds that disrupted PfEMP1 also enhances antibody binding and NK cell ADCC.
+          </div>
+        </div>
+      </li>
+
+      <li class="viva-item">
+        <button class="viva-trigger" onclick="toggleViva(this)">
+          <div class="viva-q-wrap">
+            <div class="viva-level-row">
+              <span class="viva-level vl-core">Core</span>
+            </div>
+            <div class="viva-q">What is balanced polymorphism? Give one haematological example other than sickle cell.</div>
+          </div>
+          <i data-lucide="chevron-down" class="viva-chevron"></i>
+        </button>
+        <div class="viva-answer">
+          <div class="viva-answer-inner">
+            Balanced polymorphism occurs when two or more alleles are maintained in a population because heterozygotes have a fitness advantage over either homozygote. In sickle cell: HbAS survives malaria better than HbAA, but HbSS dies in early childhood without treatment. The selective advantage to HbAS carriers keeps the HbS allele at high frequency despite the HbSS deaths.<br><br>
+            Other haematological examples: <strong>G6PD deficiency</strong> (heterozygous females have relative malaria resistance), <strong>alpha-thalassaemia trait</strong> (HbH disease vs. trait protection), CFTR heterozygosity.
+          </div>
+        </div>
+      </li>
+
+      <li class="viva-item">
+        <button class="viva-trigger" onclick="toggleViva(this)">
+          <div class="viva-q-wrap">
+            <div class="viva-level-row">
+              <span class="viva-level vl-deep">Deep</span>
+            </div>
+            <div class="viva-q">A registrar says: "I thought sickle cell disease patients are protected from malaria because they have HbS." Correct their thinking.</div>
+          </div>
+          <i data-lucide="chevron-down" class="viva-chevron"></i>
+        </button>
+        <div class="viva-answer">
+          <div class="viva-answer-inner">
+            This is a common and understandable misunderstanding. Protection in HbAS is not purely about having HbS — it is about <strong>what HbS does in context</strong>.<br><br>
+            In HbAS, HbA dilutes HbS to about 40%, so polymerisation requires a genuine stimulus (like a parasite consuming oxygen). The result is a parasite-targeted process that a functional spleen then executes on. In HbSS, 100% HbS causes chronic, diffuse polymerisation that destroys the spleen before malaria even arrives. The same molecule causes protection in one context and vulnerability in another — because the spleen, immune reserve, and baseline haemoglobin are categorically different. HbSS patients may have some intracellular resistance to some parasite genotypes, but they lack the systemic machinery to translate that into clinical protection.
+          </div>
+        </div>
+      </li>
+
+      <li class="viva-item">
+        <button class="viva-trigger" onclick="toggleViva(this)">
+          <div class="viva-q-wrap">
+            <div class="viva-level-row">
+              <span class="viva-level vl-new">2020–24 Evidence</span>
+            </div>
+            <div class="viva-q">What recent evidence has changed our understanding of the immune mechanisms in sickle cell trait and malaria protection?</div>
+          </div>
+          <i data-lucide="chevron-down" class="viva-chevron"></i>
+        </button>
+        <div class="viva-answer">
+          <div class="viva-answer-inner">
+            <strong>Loiseau et al. 2020</strong> (Clin Transl Immunol) showed HbAS children have a distinct memory-activated NK cell subset — CD38dim CD45RO+ HLA-DR+ — enriched before malaria season. These NK cells produce IFN-γ and correlate inversely with parasite density.<br><br>
+            <strong>Loiseau et al. 2021</strong> extended this to show a larger central memory CD8+ T cell compartment in HbAS children at baseline, correlating with delayed onset and better parasite control.<br><br>
+            <strong>Tukwasibwe et al. 2024</strong> demonstrated enhanced NK cell ADCC against schizonts in HbAS erythrocytes, linked to disrupted PfEMP1 expression facilitating antibody binding.<br><br>
+            These studies show that HbAS protection is not just molecular — it is immunological, with cellular immune advantages present before each malaria season even starts.
+          </div>
+        </div>
+      </li>
+
+      <li class="viva-item">
+        <button class="viva-trigger" onclick="toggleViva(this)">
+          <div class="viva-q-wrap">
+            <div class="viva-level-row">
+              <span class="viva-level vl-core">Core</span>
+            </div>
+            <div class="viva-q">Why do HbSS children in sub-Saharan Africa face higher malaria mortality than HbSS children in the UK?</div>
+          </div>
+          <i data-lucide="chevron-down" class="viva-chevron"></i>
+        </button>
+        <div class="viva-answer">
+          <div class="viva-answer-inner">
+            Several converging factors:
+            <ol>
+              <li>Direct exposure to P. falciparum — which does not occur in the UK</li>
+              <li>Limited access to hydroxycarbamide, transcranial Doppler screening, and prophylactic penicillin</li>
+              <li>Pre-existing severe anaemia with no physiological reserve when malarial haemolysis occurs</li>
+              <li>Functional asplenia from age 1 removing any residual protection</li>
+              <li>Concurrent malnutrition, limited blood transfusion access, and co-infections</li>
+            </ol>
+            In the UK, HbSS children are monitored, vaccinated, given penicillin prophylaxis, and screened for stroke risk. In endemic settings without those resources, the combination of SCD and malaria is frequently fatal.
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-brand-dot">🩸</div>
+      Blood Doctor — Dr Abdul Mannan FRCPath FCPS · Bangor Haemophilia Centre, BCUHB
+    </div>
+    <div class="footer-links">
+      <a href="#">LinkedIn</a>
+      <a href="#">blooddoctor.co@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Lucide icons init ────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.lucide) lucide.createIcons();
+});
+
+// ── Tab switching ────────────────────────────────────
+const sectionOrder = ['story','shields','fails','cards','viva'];
+let visitedSections = new Set(['story']);
+
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+  visitedSections.add(id);
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  const pct = Math.round((visitedSections.size / sectionOrder.length) * 100);
+  document.getElementById('navProgressFill').style.width = pct + '%';
+  document.getElementById('navProgressLabel').textContent = pct + '% complete';
+}
+
+// ── Viva accordion ───────────────────────────────────
+function toggleViva(btn) {
+  const item = btn.closest('.viva-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.viva-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ── Flashcards ───────────────────────────────────────
+const cards = [
+  {
+    tag: "Mechanism",
+    q: "What is the single most important reason HbSS patients are not protected from malaria, despite having HbS in every red cell?",
+    a: "<strong>Functional asplenia.</strong> By age 1, most HbSS children have lost splenic function through autoinfarction. Every protective mechanism — sickling trap, PfEMP1 clearance, immune training — requires a functioning spleen to execute. HbSS patients have the machinery but not the organ to run it."
+  },
+  {
+    tag: "Mechanism",
+    q: "What is PfEMP1 and what two dangerous things does it do?",
+    a: "PfEMP1 (P. falciparum Erythrocyte Membrane Protein 1) mediates (1) <strong>cytoadherence</strong> — the parasitised cell sticks to vascular endothelium in brain, lungs, and placenta; and (2) <strong>rosetting</strong> — parasitised cells cluster around uninfected cells, causing microvascular obstruction. Both cause severe malaria syndromes. In HbAS, sickling disrupts PfEMP1 surface trafficking, blocking both processes."
+  },
+  {
+    tag: "Evolution",
+    q: "Define balanced polymorphism and explain how HbS demonstrates it.",
+    a: "Balanced polymorphism: two or more alleles are maintained in a population because heterozygotes have a fitness advantage over either homozygote. HbAS carriers had 10–15% better survival against malaria → reproduced more → HbS allele rose to over 25% frequency in some regions. The cost: some offspring inherit two copies (HbSS) and die in early childhood without treatment."
+  },
+  {
+    tag: "New Evidence 2020–24",
+    q: "Name two cell populations newly shown to be enriched in HbAS children and associated with malaria protection.",
+    a: "(1) <strong>Memory-activated NK cells</strong>: CD38dim CD45RO+ HLA-DR+ — enriched before malaria season in HbAS, produce IFN-γ, correlate inversely with parasite density (Loiseau 2020). (2) <strong>Central memory CD8+ T cells</strong> — larger compartment in HbAS at baseline, correlate with delayed onset and better parasite control (Loiseau 2021)."
+  },
+  {
+    tag: "Clinical",
+    q: "What is the most common mechanism of malaria-related death in HbSS children in endemic areas?",
+    a: "<strong>Catastrophic anaemia.</strong> HbSS patients run a baseline Hb of 6–9 g/dL with near-maximal erythropoiesis. Malaria causes haemolysis on top of haemolysis. There is no physiological buffer. The bone marrow cannot compensate. This is fundamentally different from HbAA or HbAS individuals who start with Hb 12–15 g/dL and can tolerate malarial haemolysis."
+  },
+  {
+    tag: "Mechanism",
+    q: "Why does HbA being present in HbAS cells matter for the sickling trap mechanism?",
+    a: "In HbAS, approximately 60% of haemoglobin is HbA, which dilutes HbS. Polymerisation requires a genuine stimulus — like a parasite consuming intracellular oxygen and creating local hypoxia. This makes sickling <strong>parasite-targeted and spleen-directed</strong>. In HbSS, 100% HbS means chronic diffuse polymerisation occurs at baseline — the trap is permanently sprung and the cells are exhausted."
+  },
+  {
+    tag: "Practical",
+    q: "A child with HbSS presents with fever in Bangor. What infectious organisms are you most worried about?",
+    a: "<strong>Encapsulated bacteria</strong> due to functional asplenia: (1) Streptococcus pneumoniae — 30–600× higher risk than healthy children. (2) Haemophilus influenzae — especially non-typable strains in under-5s. (3) Neisseria meningitidis. In the UK setting (no malaria), the immediate threat is bacterial sepsis. Key question: is the child on penicillin prophylaxis and up to date with PCV13/PPSV23?"
+  },
+  {
+    tag: "Practical",
+    q: "What is an unswitched memory B cell (UMBC) and why does it matter in HbSS?",
+    a: "UMBCs are the circulating equivalent of splenic marginal zone B cells — key for initial opsonisation of encapsulated pathogens. In HbSS, UMBC frequency is lower than in controls (4.7% vs 6.6%) and <strong>declines progressively with age</strong> (Tubman 2024, AJH). This explains why HbSS patients mount inadequate responses to polysaccharide vaccines throughout life — functional asplenia is a worsening age-related immunological decline."
+  },
+  {
+    tag: "Mechanism",
+    q: "How does impaired rosetting in HbAS cells prevent organ damage in malaria?",
+    a: "Rosetting is when parasitised cells cluster around uninfected red cells, causing microvascular obstruction. HbAS parasitised cells show significantly reduced rosetting compared to HbAA. Less rosetting means less obstruction in cerebral, renal, and pulmonary capillaries — even when infection occurs, the clinical syndrome is less severe. This is why HbAS protection is both <strong>quantitative</strong> (fewer parasites) and <strong>qualitative</strong> (less severe disease per parasite)."
+  },
+  {
+    tag: "FRCPath Angle",
+    q: "The examiner asks: 'Give three analogies that explain HbAS protection to a medical student.' What do you say?",
+    a: "(1) <strong>Sickling trap</strong>: 'The parasite digs its own grave — it consumes oxygen to activate the very mechanism that kills it.' (2) <strong>PfEMP1 disruption</strong>: 'The parasite's camouflage fails. It can't grip the vessel wall, so it gets swept to the spleen.' (3) <strong>Immune training</strong>: 'HbAS children run a built-in malaria vaccination programme — the spleen delivers antigens in controlled doses, building immune memory with each controlled exposure.'"
+  }
+];
+
+let curCard = 0;
+let isFlipped = false;
+let seenCards = new Set([0]);
+
+function buildDots() {
+  const wrap = document.getElementById('fcDots');
+  wrap.innerHTML = '';
+  cards.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'fc-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goToCard(i);
+    d.style.cursor = 'pointer';
+    wrap.appendChild(d);
+  });
+}
+
+function renderCard() {
+  const c = cards[curCard];
+  const flipper = document.getElementById('fcFlipper');
+  flipper.classList.remove('flipped');
+  isFlipped = false;
+  setTimeout(() => {
+    document.getElementById('fcQ').textContent = c.q;
+    document.getElementById('fcA').innerHTML = c.a;
+    document.getElementById('fcFrontLabel').textContent = c.tag;
+    document.getElementById('fcBackLabel').textContent = 'Answer — ' + c.tag;
+    document.getElementById('fcCounter').textContent = `Card ${curCard + 1} of ${cards.length}`;
+    document.getElementById('fcProgressFill').style.width = ((curCard + 1) / cards.length * 100) + '%';
+    document.getElementById('fcPrev').disabled = curCard === 0;
+    document.getElementById('fcNext').disabled = curCard === cards.length - 1;
+    const badge = document.getElementById('cardsBadge');
+    badge.textContent = cards.length - seenCards.size || '';
+    // update dots
+    document.querySelectorAll('.fc-dot').forEach((d, i) => {
+      d.classList.remove('active', 'seen');
+      if (i === curCard) d.classList.add('active');
+      else if (seenCards.has(i)) d.classList.add('seen');
+    });
+    if (window.lucide) lucide.createIcons();
+  }, isFlipped ? 280 : 0);
+}
+
+function flipCard() {
+  document.getElementById('fcFlipper').classList.toggle('flipped');
+  isFlipped = !isFlipped;
+}
+
+function nextCard() {
+  if (curCard < cards.length - 1) {
+    curCard++;
+    seenCards.add(curCard);
+    renderCard();
+  }
+}
+
+function prevCard() {
+  if (curCard > 0) { curCard--; renderCard(); }
+}
+
+function goToCard(i) {
+  curCard = i; seenCards.add(i); renderCard();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  const activePanel = document.querySelector('.panel.active');
+  if (!activePanel || activePanel.id !== 'cards') return;
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+// Init
+buildDots();
+renderCard();
+updateProgress();
+</script>
+</body>
+</html>
