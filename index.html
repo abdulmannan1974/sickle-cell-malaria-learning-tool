@@ -56,7 +56,7 @@
   img { max-width: 100%; }
   button { cursor: pointer; font-family: inherit; }
 
-  /* ── Scrollbar ─────────────────────────────────────────── */
+  /* ── Scrollbar ────────────────────────────────────────────── */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
@@ -234,7 +234,7 @@
   }
   .story-card-body strong { color: var(--text-primary); font-weight: 600; }
 
-  /* ── Key Insight Banner ────────────────────────────────── */
+  /* ── Key Insight Banner ─────────────────────────────────── */
   .insight-banner {
     background: var(--bg-dark); color: white;
     border-radius: var(--radius-lg); padding: 22px 24px;
@@ -305,14 +305,21 @@
   .sh-purple .shield-analogy { background: var(--purple-light); }
   .sh-amber .shield-analogy { background: var(--amber-light); }
   .sh-coral .shield-analogy { background: var(--accent-light); }
-  .shield-cta {
-    font-size: 11px; font-weight: 600; color: var(--text-muted);
-    margin-top: 12px; display: flex; align-items: center; gap: 4px;
-    opacity: 0; transition: opacity var(--transition);
+  /* footer */
+  .site-footer {
+    background: var(--bg-dark);
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    padding: 24px 24px;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    margin-top: 64px;
   }
-  .shield-card:hover .shield-cta { opacity: 1; }
+  .site-footer strong { color: rgba(255,255,255,0.85); }
+  .site-footer a { color: var(--accent); text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
 
-  /* ── 2024 Pearl Box ────────────────────────────────────── */
+  /* ── 2024 Pearl Box ─────────────────────────────────────── */
   .pearl-box {
     background: linear-gradient(135deg, #1A1916 0%, #262420 100%);
     border-radius: var(--radius-lg); padding: 22px 24px;
@@ -367,7 +374,7 @@
   .badge-haas { background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
   .badge-hss  { background: #FEECE8; color: #E25C3B; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
 
-  /* ── Failure Cards ─────────────────────────────────────── */
+  /* ── Failure Cards ───────────────────────────────────── */
   .fail-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
   .fail-card {
     background: var(--bg-card); border: 1px solid var(--border);
@@ -471,7 +478,7 @@
   .fc-dot.active { background: var(--accent); }
   .fc-dot.seen   { background: var(--border-strong); }
 
-  /* ── Viva Questions ────────────────────────────────────── */
+  /* ── Viva Questions ──────────────────────────────────── */
   .viva-list { display: flex; flex-direction: column; gap: 10px; }
   .viva-item {
     background: var(--bg-card); border: 1px solid var(--border);
@@ -521,25 +528,6 @@
     border-radius: 20px;
   }
 
-  /* ── Footer ────────────────────────────────────────────── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 28px 0; margin-top: 20px;
-    color: var(--text-muted); font-size: 12px;
-  }
-  .footer-inner {
-    max-width: 900px; margin: 0 auto; padding: 0 24px;
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  }
-  .footer-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-secondary); }
-  .footer-brand-dot {
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--accent); color: white; font-size: 9px;
-    font-weight: 700; display: flex; align-items: center; justify-content: center;
-  }
-  .footer-links { display: flex; gap: 16px; }
-  .footer-links a { color: var(--text-muted); text-decoration: none; }
-  .footer-links a:hover { color: var(--text-primary); }
 
   /* ── Utility ───────────────────────────────────────────── */
   .divider { height: 1px; background: var(--border); margin: 28px 0; }
@@ -706,44 +694,39 @@
     </div>
 
     <div class="shields-grid">
-      <div class="shield-card sh-blue" onclick="sendPrompt('Explain the sickling trap mechanism in sickle cell trait and malaria in detail')">
+      <div class="shield-card sh-blue">
         <div class="shield-number">Shield ①</div>
         <div class="shield-title">The Sickling Trap</div>
         <div class="shield-body">Parasite consumes O₂ → local hypoxia → HbS polymerises → cell sickles → spleen destroys cell + parasite inside.</div>
         <div class="shield-analogy">"The parasite digs its own grave. By consuming oxygen, it triggers the very process that kills it."</div>
-        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
       </div>
 
-      <div class="shield-card sh-teal" onclick="sendPrompt('Explain the hostile intracellular environment in HbAS red cells against malaria parasites')">
+      <div class="shield-card sh-teal">
         <div class="shield-number">Shield ②</div>
         <div class="shield-title">Hostile Interior</div>
         <div class="shield-body">↑ Oxidative stress · ↓ pH · ↓ K⁺ · toxic HbS degradation products — all damage the parasite before sickling even begins.</div>
         <div class="shield-analogy">"The HbAS red cell is like an unwelcoming hotel — everything the parasite needs is in short supply."</div>
-        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
       </div>
 
-      <div class="shield-card sh-purple" onclick="sendPrompt('Explain PfEMP1 trafficking disruption in HbAS cells and why this prevents cerebral malaria')">
+      <div class="shield-card sh-purple">
         <div class="shield-number">Shield ③</div>
         <div class="shield-title">PfEMP1 Disruption <span class="shield-new">KEY</span></div>
         <div class="shield-body">Sickling disrupts PfEMP1 surface trafficking → less cytoadherence → infected cell stays in circulation → spleen destroys it. Prevents cerebral malaria.</div>
         <div class="shield-analogy">"The parasite's camouflage fails. It can't grip the vessel wall, so it gets swept to the spleen."</div>
-        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
       </div>
 
-      <div class="shield-card sh-amber" onclick="sendPrompt('How does HbAS accelerate antimalarial immune training including NK cells and CD8 T cells')">
+      <div class="shield-card sh-amber">
         <div class="shield-number">Shield ④</div>
         <div class="shield-title">Immune Training <span class="shield-new">NEW 2020–21</span></div>
         <div class="shield-body">Repeated, spleen-controlled antigen exposure → faster NK cell memory (CD38dim CD45RO+) + larger CD8+ T cell compartment → quicker parasite control on re-exposure.</div>
         <div class="shield-analogy">"HbAS children run a built-in malaria vaccination programme — the spleen delivers antigens in controlled doses."</div>
-        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
       </div>
 
-      <div class="shield-card sh-coral" onclick="sendPrompt('Explain impaired rosetting in HbAS cells and how this prevents microvascular obstruction in malaria')">
+      <div class="shield-card sh-coral">
         <div class="shield-number">Shield ⑤</div>
         <div class="shield-title">Impaired Rosetting</div>
         <div class="shield-body">HbAS parasitised cells show significantly reduced rosetting → less microvascular obstruction → less cerebral, renal, pulmonary sequestration.</div>
         <div class="shield-analogy">"Normal cells clump and block vessels. HbAS cells won't stick — so the traffic jam never forms."</div>
-        <div class="shield-cta"><i data-lucide="arrow-right" style="width:12px;height:12px;"></i> Ask Claude for deep dive</div>
       </div>
     </div>
 
@@ -829,7 +812,7 @@
 
       <div class="fail-card">
         <div class="fail-card-title"><i data-lucide="x-circle" style="width:16px;height:16px;color:#E25C3B;"></i> Failure 2 — No HbA to dilute polymerisation</div>
-        <div class="fail-card-body">In HbAS, HbA acts as a buffer. Polymerisation needs a genuine stimulus — like a parasite consuming intracellular oxygen and creating local hypoxia. In HbSS, <strong>100% HbS means polymerisation is ongoing and chronic</strong>. Red cells are already exhausted before the parasite arrives. The hostile environment that kills parasites in HbAS is simply baseline cellular stress in HbSS.</div>
+        <div class="fail-card-body">In HbAS, HbA acts as a buffer. Polymerisation needs real hypoxic provocation — like a parasite consuming intracellular oxygen. In HbSS, <strong>100% HbS means polymerisation is ongoing and chronic</strong>. Red cells are already exhausted before the parasite arrives. The hostile environment that kills parasites in HbAS is simply baseline cellular stress in HbSS.</div>
       </div>
 
       <div class="fail-card">
@@ -1019,19 +1002,7 @@
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="footer-brand-dot">🩸</div>
-      Blood Doctor — Dr Abdul Mannan FRCPath FCPS · Bangor Haemophilia Centre, BCUHB
-    </div>
-    <div class="footer-links">
-      <a href="#">LinkedIn</a>
-      <a href="#">blooddoctor.co@gmail.com</a>
-    </div>
-  </div>
-</footer>
+<!-- FOOTER is at bottom of page via .site-footer -->
 
 <script>
 // ── Lucide icons init ────────────────────────────────
@@ -1039,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
 });
 
-// ── Tab switching ────────────────────────────────────
+// ── Tab switching ───────────────────────────────────
 const sectionOrder = ['story','shields','fails','cards','viva'];
 let visitedSections = new Set(['story']);
 
@@ -1199,5 +1170,11 @@ buildDots();
 renderCard();
 updateProgress();
 </script>
+
+<footer class="site-footer">
+  <strong>Dr Abdul Mannan FRCPath FCPS</strong> &nbsp;|&nbsp; Blood🩸Doctor &nbsp;|&nbsp;
+  <a href="mailto:blooddoctor.co@gmail.com">blooddoctor.co@gmail.com</a>
+</footer>
+
 </body>
 </html>
